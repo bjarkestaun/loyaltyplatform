@@ -1,0 +1,51 @@
+<div ng-hide="oneMerchant"><h1>You are linked to multiple merchants. Please pick the one you want to work on now.</h1>
+<br>
+
+<div ng-repeat="merchant in merchantList">
+<button ng-click="chooseMerchant($index)">{{merchant.name}} {{$index}}</button>
+</div></div>
+
+<div ng-show="oneMerchant">
+<h1>Dashboard</h1>
+<br>
+
+<p>Name: </p>
+<p>{{merchantInfo.name}}</p>
+<br><br>
+
+<p>Description: </p>
+<p>{{merchantInfo.description}}</p>
+<br><br>
+
+<p>Email: </p>
+<p>{{merchantInfo.email}}</p>
+<br><br>
+
+<p>Phone: </p>
+<p>{{merchantInfo.phone}}</p>
+<br><br>
+
+<p>Website: </p>
+<p>{{merchantInfo.url}}</p>
+<br><br>
+
+<p>Address: </p>
+<p>{{merchantInfo.address.street}}</p><br>
+<p>{{merchantInfo.address.zipCode}} {{merchantInfo.address.city}}</p><br>
+<br><br>
+
+<p>VAT number: </p>
+<p>{{merchantInfo.vatNumber}}</p>
+<br><br>
+
+<button ng-click="goToCreateCardType()">Create new card</button>
+<button>Change details</button>
+<button>Change password</button>
+
+<br><br>
+
+<a href="">Users that have visited you</a>
+<br>
+<a href="">Points earned day to day</a>
+<br>
+</div>

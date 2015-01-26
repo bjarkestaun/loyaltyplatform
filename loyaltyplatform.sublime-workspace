@@ -1,0 +1,436 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"merch",
+				"merchantForm"
+			],
+			[
+				"mer",
+				"merchantid"
+			],
+			[
+				"find",
+				"findById"
+			],
+			[
+				"error",
+				"errorPayload"
+			],
+			[
+				"get",
+				"getCurrentUser"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "client/app/signupmerchant/signupmerchant.js",
+			"settings":
+			{
+				"buffer_size": 253,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "client/components/merchant/merchant.service.js",
+			"settings":
+			{
+				"buffer_size": 214,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "client/app/signupmerchant/signupmerchant.controller.js",
+			"settings":
+			{
+				"buffer_size": 539,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "client/app/signupmerchant/signupmerchant.html",
+			"settings":
+			{
+				"buffer_size": 2061,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/coding/loyaltyplatform",
+		"/C/coding/loyaltyplatform/client",
+		"/C/coding/loyaltyplatform/client/app",
+		"/C/coding/loyaltyplatform/client/app/account",
+		"/C/coding/loyaltyplatform/client/app/account/signup",
+		"/C/coding/loyaltyplatform/client/app/main",
+		"/C/coding/loyaltyplatform/client/app/main2",
+		"/C/coding/loyaltyplatform/client/app/merchantmain",
+		"/C/coding/loyaltyplatform/client/app/signupmerchant",
+		"/C/coding/loyaltyplatform/client/app/welcome",
+		"/C/coding/loyaltyplatform/client/components",
+		"/C/coding/loyaltyplatform/client/components/auth",
+		"/C/coding/loyaltyplatform/client/components/merchant",
+		"/C/coding/loyaltyplatform/client/components/places",
+		"/C/coding/loyaltyplatform/server",
+		"/C/coding/loyaltyplatform/server/api",
+		"/C/coding/loyaltyplatform/server/api/card",
+		"/C/coding/loyaltyplatform/server/api/cardType",
+		"/C/coding/loyaltyplatform/server/api/merchant",
+		"/C/coding/loyaltyplatform/server/api/place",
+		"/C/coding/loyaltyplatform/server/api/thing",
+		"/C/coding/loyaltyplatform/server/api/user",
+		"/C/coding/loyaltyplatform/server/auth",
+		"/C/coding/loyaltyplatform/server/auth/facebook",
+		"/C/coding/loyaltyplatform/server/config"
+	],
+	"file_history":
+	[
+		"/C/coding/loyaltyplatform/client/app/signup2/signup2.js",
+		"/C/coding/loyaltyplatform/client/app/signup2/signup2.html",
+		"/C/coding/loyaltyplatform/client/app/account/signup/signup.html",
+		"/C/coding/loyaltyplatform/client/app/main2/main2.controller.js",
+		"/C/coding/loyaltyplatform/client/app/signup2/signup2.controller.js",
+		"/C/coding/loyaltyplatform/client/app/account/signup/signup.controller.js",
+		"/C/coding/loyaltyplatform/client/app/merchantmain/merchantmain.html",
+		"/C/coding/loyaltyplatform/server/api/merchant/merchant.model.js",
+		"/C/coding/loyaltyplatform/client/app/main2/main2.html",
+		"/C/coding/loyaltyplatform/client/app/signupmerchant/signupmerchant.js",
+		"/C/coding/loyaltyplatform/client/components/auth/user.service.js",
+		"/C/coding/loyaltyplatform/client/app/main/main.controller.js",
+		"/C/coding/loyaltyplatform/client/app/main2/main2.css",
+		"/C/coding/loyaltyplatform/server/auth/facebook/index.js",
+		"/C/coding/loyaltyplatform/server/api/merchant/merchant.controller.js",
+		"/C/coding/loyaltyplatform/client/app/signupmerchant/signupmerchant.html",
+		"/C/coding/loyaltyplatform/client/app/welcome/welcome.js",
+		"/C/coding/loyaltyplatform/client/app/welcome/welcome.controller.js",
+		"/C/coding/loyaltyplatform/client/app/welcome/welcome.html",
+		"/C/coding/loyaltyplatform/server/api/card/card.model.js",
+		"/C/coding/loyaltyplatform/server/api/merchant/index.js",
+		"/C/coding/loyaltyplatform/server/api/user/user.model.js",
+		"/C/coding/loyaltyplatform/server/api/user/index.js",
+		"/C/coding/loyaltyplatform/server/api/user/user.controller.js",
+		"/C/coding/playground/test.js",
+		"/C/coding/loyaltyplatform/server/routes.js",
+		"/C/coding/loyaltyplatform/server/api/cardType/cardType.model.js",
+		"/C/coding/loyaltyplatform/server/config/seed.js",
+		"/C/coding/loyaltyplatform/server/api/card/card.controller.js",
+		"/C/coding/loyaltyplatform/server/api/card/index.js",
+		"/C/coding/loyaltyplatform/server/api/cardType/cardType.controller.js",
+		"/C/coding/loyaltyplatform/server/api/cardType/index.js",
+		"/C/coding/loyaltyplatform/server/api/place/place.model.js",
+		"/C/coding/loyaltyplatform/client/app/main2/main2.js",
+		"/C/coding/loyaltyplatform/client/components/places/places.service.js",
+		"/C/coding/loyaltyplatform/server/api/place/index.js",
+		"/C/coding/loyaltyplatform/server/api/place/place.controller.js",
+		"/C/coding/loyaltyplatform/client/index.html",
+		"/C/coding/loyaltyplatform/client/app/main2/spinner.css",
+		"/C/coding/loyaltyplatform/client/app/app.js",
+		"/C/coding/loyaltyplatform/server/api/places/places.model.js",
+		"/C/coding/loyaltyplatform/server/api/places/places.controller.js",
+		"/C/coding/loyaltyplatform/server/api/places/index.js",
+		"/C/coding/loyaltyplatform/client/app/signin2/signin2.html",
+		"/C/coding/loyaltyplatform/client/app/signin2/signin2.js",
+		"/C/coding/loyaltyplatform/client/app/signin2/signin2.controller.js",
+		"/C/coding/loyaltyplatform/server/config/local.env.js",
+		"/C/coding/loyaltyplatform/server/auth/google/index.js",
+		"/C/coding/loyaltyplatform/client/app/login2/login2.html",
+		"/C/coding/loyaltyplatform/client/app/signin2/login2.html",
+		"/C/coding/loyaltyplatform/client/app/main/main.js",
+		"/C/coding/loyaltyplatform/client/app/main/main.html",
+		"/C/coding/loyaltyplatform/client/app/login2/login2.controller.js",
+		"/C/coding/loyaltyplatform/client/app/login2/login2.js"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"errors",
+			"error",
+			"merchant.",
+			"merchants",
+			"$http.get",
+			"\\",
+			" required",
+			"website",
+			"state",
+			"country",
+			"config",
+			"objectid",
+			"handle",
+			"handleerror",
+			"params",
+			"save",
+			"schema",
+			"bjarke",
+			"b",
+			"bjarke",
+			"angular",
+			".get",
+			"me",
+			"/me",
+			"_id",
+			"out",
+			"login2"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "client/app/signupmerchant/signupmerchant.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 253,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								13,
+								13
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "client/components/merchant/merchant.service.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 214,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								208,
+								208
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "client/app/signupmerchant/signupmerchant.controller.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 539,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								287,
+								287
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "client/app/signupmerchant/signupmerchant.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2061,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								252,
+								257
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"project": "loyaltyplatform.sublime-project",
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 258.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

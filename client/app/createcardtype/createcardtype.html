@@ -1,0 +1,22 @@
+<h1>Please provide some information about your new card.</h1>
+
+<form name="cardTypeForm" novalidate>
+  
+  <label>Name</label><br>
+  <input type="text" name="name" ng-model="cardType.name" required/><br>
+  <p ng-show="cardTypeForm.name.$error.required && submitted">Required</p>
+
+  <label>Description (you can always fill this in later)</label><br>
+  <textarea rows="3" type="text" ng-model="cardType.description"></textarea><br>
+
+  <label>Points on card</label><br>
+  <input type="number" name="maxpoints" min="0" step="1" ng-model="cardType.maxPoints" required/><br>
+  <p ng-show="cardTypeForm.maxpoints.$error.required && submitted">Required</p>
+  
+  <label>Duration in months (leave it blank to omit expiry date)</label><br>
+  <input type="number" name="duration" ng-model="cardType.duration" required/><br>
+  <p ng-show="cardTypeForm.duration.$error.required && submitted">Required</p>
+ 
+  <input type="submit" ng-click="createCardType(cardType)" value="Save"/>
+
+</form>

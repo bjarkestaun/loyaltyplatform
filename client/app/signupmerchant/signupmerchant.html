@@ -1,0 +1,47 @@
+<h1>You are almost ready. We just need a few details about your company.</h1>
+
+<form name="merchantForm" novalidate>
+  
+  <label>Name</label><br>
+  <input type="text" name="name" ng-model="merchant.name" required/><br>
+  <p ng-show="merchantForm.name.$error.required && submitted">Required</p>
+
+  <label>Description (you can always fill this in later)</label><br>
+  <textarea rows="3" type="text" ng-model="merchant.description"></textarea><br>
+  
+  <label>Email</label><br>
+  <input type="email" name="email" ng-model="merchant.email" required/><br>
+  <p ng-show="merchantForm.email.$error.required && submitted">Required</p>
+  
+  <label>Phone</label><br>
+  <input type="tel" name="phone" ng-model="merchant.phone" required/><br>
+  <p ng-show="merchantForm.phone.$error.required && submitted">Required</p>
+  
+  <label>Website</label><br>
+  <input type="url" ng-model="merchant.url"/><br>
+  
+  <label>Address</label><br>
+  <input type="text" name="street" ng-model="merchant.address.street"/ required><br>
+  <p ng-show="merchantForm.street.$error.required && submitted">Required</p>
+  
+  <label>Zip code</label><br>
+  <input type="text" name="zipcode" ng-model="merchant.address.zipCode" required/><br>
+  <p ng-show="merchantForm.zipcode.$error.required && submitted">Required</p>
+  
+  <label>City</label><br>
+  <input type="text" name="city" ng-model="merchant.address.city" required/><br>
+  <p ng-show="merchantForm.city.$error.required && submitted">Required</p>
+  
+  <label>Country</label><br>
+  <input type="text" name="country" ng-model="merchant.address.country" required/><br>
+  <p ng-show="merchantForm.country.$error.required && submitted">Required</p>
+  
+  <label>VAT number</label><br>
+  <input type="text" name="vatnumber" ng-model="merchant.vatNumber" required/><br>
+  <p ng-show="merchantForm.vatnumber.$error.required && submitted">Required</p>
+
+  <input type="submit" ng-click="signupMerchant(merchant)" value="Save"/>
+
+  <label ng-bind="errorMessage">bjarke</label>
+
+</form>
