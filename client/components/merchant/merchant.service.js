@@ -3,6 +3,8 @@
 angular.module('loyaltyApp')
 .factory('Merchant', function Merchant($location, $rootScope, $http, User, $cookieStore, $q, $log) {
 
+  var merchant = null;
+
   return {
 
     createMerchant: function(newMerchant) {
@@ -14,7 +16,7 @@ angular.module('loyaltyApp')
       	data: newMerchant
       	}).
       success(function(data) {
-          deferred.resolve({});
+          deferred.resolve(data);
         }).error(function(msg, code) {
           deferred.reject(msg);
           $log.error(msg, code);
@@ -24,16 +26,25 @@ angular.module('loyaltyApp')
 
     getMerchant: function() {
       var deferred = $q.defer();
-  	 $http.get('/api/merchants/me')
-     .success(function(data) {
-      deferred.resolve({
-  			data: data
-  		});
-    }).error(function(msg, code) {
-  		deferred.reject(msg);
-  	});
-    return deferred.promise;
-  }
-};
+      $http.get('/api/merchants/me')
+      .success(function(data) {
+        deferred.resolve({
+          data: data
+        });
+      }).error(function(msg, code) {
+        deferred.reject(msg);
+      });
+      return deferred.promise;
+    },
+
+    getDecidedMerchant: function() {
+      return merchant;
+    },
+
+    decideMerchant: function(thisMerchant) {
+      merchant = thisMerchant;
+    }
+
+  };
 
 });

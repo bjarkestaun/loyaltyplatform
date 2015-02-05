@@ -6,6 +6,8 @@ var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 var Card = require('../card/card.model');
 var Merchant = require('../merchant/merchant.model');
+var CardType = require('../cardType/cardType.model');
+var async = require('async');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -110,13 +112,101 @@ exports.authCallback = function(req, res, next) {
  * @return array of active Card objects including transactions
  */
 exports.showCards = function(req, res, next) {
-  var matchCriteria = {user_id: req.user_id};
+  var matchCriteria = {user_id: req.user._id};
   if (req.params.status) {
-    matchCriteria.status = req.body.status;
+    matchCriteria.status = req.params.status;
   }
-  Card.find(matchCriteria, function(err, cards) {
+  var populateQuery = [
+    {
+      path: 'merchant_id',
+      select: 'status name description email formattedAddress Location phone url'
+    }, {
+      path: 'cardType_id',
+      select: 'status name description maxPoints duration eventTypes'
+    }];
+  Card.find(matchCriteria).populate(populateQuery).exec( function(err, cards) {
+    if (err) return next(err);
+    if (!cards) return res.json(401);
+/*    for (var cardKey = 0; cards.length; cardKey++) {
+      console.log('tester array ' + cards[cardKey]._id);
+      cards[cardKey].earnedPoints = 0;
+      for (var eventKey in cards[cardKey].events) {
+        cards[cardKey].earnedPoints += cards[cardKey].events[eventKey];
+        console.log('earned points ' + cards[cardKey].earnedPoints);
+      };
+    };
+    console.log(cards[0].earnedPoints); */
     res.json(cards);
   });
+};
+
+exports.showCardTypes = function(req, res, next) {
+  CardType.find({
+    merchant_id: req.params.merchantId
+  }, function(err, cardTypes) {
+    if (err) return next(err);
+    if (!cardTypes) return res.json(401);
+    res.json(cardTypes);
+  });
+};
+
+var getCardsAndCardTypes = function(req, callback) {
+  async.parallel({
+    cards: getCards(req, callback),
+    cardTypes: getCardTypes(req, callback)
+  }, function(err, cardsAndCardTypes) {
+    callback(err, cardsAndCardTypes);
+  });
+};
+
+var getCardTypes = function(req, callback) {
+  var queryCardType = CardType.find({ merchant_id: req.params.merchantId }).lean();
+  queryCardType.exec( function(err, results) {
+    callback(err, results);
+  });
+};
+
+var getCards = function(req, callback) {
+  Card.aggregate([
+    { $match: { user_id: req.user._id, merchant_id: req.params.merchantId } },
+    { $unwind: "$events" },
+    { $group: { _id: "$_id", cardType_id: { $last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: {$sum: "$events.points" } } }
+    ], function(err, cards) {
+      if (err) {
+        console.log(err);
+        callback('error: ' + err);
+      }
+      else {
+//        var output = results.earnedPoints;
+        console.log('fra getpointsoncard ' + JSON.stringify(cards));
+        callback(null, cards);
+      }
+    });
+};
+
+/* var addCardsToCardTypes = function(cardTypes, cards, callback) {
+  for (var cardTypeKey in cardTypes) {
+    for (var cardKey in cards) {
+      if (cardTypes[cardTypeKey]._id.equals(cards[cardKey].cardType_id)) {
+        getCardDetails(cards[cardKey].cardType_id, function(err, cardTypes)
+      }
+    } 
+  }
+  callback(cardTypes);
+}; */
+
+exports.showMerchantCards = function(req, res, next) {
+  // TODO: refactor
+  // do more efficient adding of card as object in cardtype instead of two for loops
+//  getCardsAndCardTypes(req, function(err, results) {
+//    if (err) return next(err);
+//    if (!results.cardTypes) return res.json(401);
+//    if (!results.cards || results.cards.length === 0) return res.json(results.cardTypes);
+    getCardsAndCardTypes(req, function(err, cardsAndCardTypes) {
+      console.log('card details ' + JSON.stringify(cardsAndCardTypes));
+      res.json(cardsAndCardTypes);
+    });
+//  });
 };
 
 /**
@@ -131,6 +221,26 @@ exports.showMerchants = function(req, res, next) {
   });
 };
 
+exports.searchForMerchants = function(req, res, next) {
+  var userLocation = [req.body.lng, req.body.lat];
+  Merchant.find({
+    location: {
+      $near: {
+        $geometry: {
+          type: 'Point',
+          coordinates: userLocation
+        },
+        $maxDistance: req.body.distance
+      }
+//      $within: { $centerSphere: [ userLocation , req.body.distance / 6378.137 ] }
+    }
+  }, function(err, merchants) {
+    if (err) return next(err);
+    if (!merchants) return res.json(401);
+    res.json(merchants);
+  })
+};
+
 /**
  * Adds a new card for a merchant for the authenticated user
  * @param merchantid the ID of the merchant
@@ -138,7 +248,7 @@ exports.showMerchants = function(req, res, next) {
 exports.createCard = function(req, res, next) {
   // check if user exists and merchant exists and cardtype exists
   // then if they do create new card
-  CardType.findById(req.body.cardtype_id, function(err, thisCardType) {
+  CardType.findById(req.body.cardType_id, function(err, thisCardType) {
     if(err || !thisCardType) {
       if (!thisCardType) { err = 'Sorry - the cardtype does not exists'; }
       return handleError(res, err);
@@ -147,7 +257,7 @@ exports.createCard = function(req, res, next) {
     newCard.status = 1;
     newCard.lastUpdated = Date.now();
     newCard.merchant_id = thisCardType.merchant_id;
-    // newCard.user_id = req.user_id;
+     newCard.user_id = req.user._id;
     newCard.events = [];
     newCard.save(function(err, savedCard) {
       if(err) {
@@ -162,9 +272,28 @@ exports.createCard = function(req, res, next) {
  * Requests points on a card that the authenticated user
  * @param cardid the ID of the card
  */
-exports.requestPoints = function(req, res, next) {
-  // TODO
-  return res.json(null);
+exports.requestEvent = function(req, res, next) {
+  Card.findById(req.params.cardId, function(err, thisCard) {
+    if(err || !thisCard) {
+      if (!thisCard) { err = 'Sorry this card does not exist';}
+      return handleError(res, err);
+    }
+/*    if (thisCard.user_id != req.user._id) {
+      console.log(thisCard.user_id);
+      console.log(req.user._id);
+      console.log('not your card');
+      console.log(thisCard.user_id == req.user._id);
+      err = 'This is not your card';
+      return handleError(res, err);
+    } */
+    thisCard.events.push({points: 1});
+    thisCard.save(function(err, savedCard) {
+      if(err) {
+        return handleError(res,err);
+      }
+      res.json(savedCard);
+    });
+  });
 };
 
 /** Approves using a card for the authenticated user

@@ -6,7 +6,8 @@ angular.module('loyaltyApp', [
   'ngSanitize',
   'ngRoute',
   'btford.socket-io',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'geolocation'
 ])
   .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider

@@ -12,7 +12,8 @@ angular.module('loyaltyApp')
       if ($scope.merchantForm.$valid) {
       	Merchant.createMerchant(merchant).then( function(payload) {
       		$scope.errorMessage = 'success';
-      		$location.path('/merchantmain');
+          Merchant.decideMerchant(payload);
+      		$location.path('/createcardtype');
       	},
       	function(errorPayload) {
       		$scope.errorMessage = 'Merchant kunne ikke oprettes.';

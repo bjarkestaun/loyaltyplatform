@@ -6,6 +6,7 @@ angular.module('loyaltyApp')
   return {
 
     createCardType: function(newCardType) {
+      console.log(newCardType);
       var deferred = $q.defer();
       $http({
       	method: 'POST',

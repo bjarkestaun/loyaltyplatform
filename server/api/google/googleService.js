@@ -2,30 +2,37 @@
 
 var http = require('http');
 var url = require('url');
+var querystring = require('querystring');
 
 function formatQuery(query) {
-  var queryString = '';
-  queryString += query.street + ', ' + query.zipCode + ' ' + query.city + ', ' + query.country;
-  var queryObject = {};
-  queryObject.address = queryString;
-  return queryObject;
+  var formattedQuery = {};
+  var queryString = query.street + ', ' + query.zipCode + ' ' + query.city + ', ' + query.country;
+  formattedQuery.address = queryString;
+  return formattedQuery;
 };
 
 function formatResponse(response) {
-  return response;
+  var formattedResponse = {};
+  response.forEach( function(result) {
+    console.log(result.formatted_address);
+    if (result.geometry.location_type === 'ROOFTOP' || result.geometry.location_type === 'RANGE_INTERPOLATED') {
+      formattedResponse.formattedAddress = result.formatted_address;
+      formattedResponse.location = result.geometry.location;
+    }
+  });
+  return formattedResponse;
 };
 
 exports.getAddress = function(address, callBack) {
-  var addressObject = formatQuery(address);
-  console.log('start på funktion ' + addressObject.address);
+  var addressString = querystring.stringify(formatQuery(address));
   var options = {
     host: 'maps.googleapis.com',
-    path: '/maps/api/geocode/json',
+    path: '/maps/api/geocode/json?' + addressString,
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
-    },
-    query: {'address': addressObject.address}
+      'Content-Type': 'application/json',
+      'Content-Length': 0
+    }
   };
   var req = http.request(options, function(res) {
     res.setEncoding('utf8');
@@ -34,12 +41,19 @@ exports.getAddress = function(address, callBack) {
       body += chunk;
     });
     res.on('end', function() {
-      console.log('nået til end' + body);
       if (res.statusCode === 200) {
-        console.log('res 200 ' + body);
-        return callBack(null, body);
+        var objectifiedBody = JSON.parse(body);
+        if (objectifiedBody.status === 'OK') {
+          console.log('lykkedes med: ' + objectifiedBody.results);
+          return callBack(null, formatResponse(objectifiedBody.results));
+        }
+        else {
+          console.log('status ikke ok' + body);
+          return callBack('Google did not return OK', null);
+        }
       }
       else {
+        console.log('status code ikke 200' + res.statusCode);
         return callBack('Status code is: ' + res.statusCode, null);
       }
     });

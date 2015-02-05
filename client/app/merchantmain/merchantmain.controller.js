@@ -12,12 +12,19 @@ angular.module('loyaltyApp')
   var init = function() {
     Merchant.getMerchant().then( function(payload) {
       $scope.merchantList = payload.data;
-      if($scope.merchantList.length === 1) {
+      if ($scope.merchantList.length === 0) {
+        $location.path('/signupmerchant');
+      }
+      else if (Merchant.getDecidedMerchant()) {
+        $scope.merchantInfo = Merchant.getDecidedMerchant();
+      }
+      else if ($scope.merchantList.length === 1) {
         $scope.merchantInfo = $scope.merchantList[0];
+        Merchant.decideMerchant($scope.merchantInfo);
         $scope.oneMerchant = true;
       }
       else {
-        $scope.oneMerchant = false;
+        $location.path('/multiplemerchants');
       }
     },
     function(errorPayload) {
@@ -25,13 +32,12 @@ angular.module('loyaltyApp')
     });
   };
 
-  $scope.chooseMerchant = function(merchantIndex) {
-    $scope.merchantInfo = $scope.merchantList[merchantIndex];
-    $scope.oneMerchant = true;
+  $scope.chooseDifferentMerchant = function() {
+    $location.path('multiplemerchants');
   };
 
   $scope.goToCreateCardType = function() {
-    $location.path('/createcardtype').search({merchant_id: $scope.merchantInfo._id});
+    $location.path('/createcardtype');
   };
 
   $scope.logout = function() {

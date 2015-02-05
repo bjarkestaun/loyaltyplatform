@@ -8,7 +8,7 @@ var router = express.Router();
 
 router.post('/', auth.isAuthenticated(), controller.createMerchant);
 router.get('/me', auth.isAuthenticated(), controller.me);
-router.get('/me/cardtypes', auth.isAuthenticated(), controller.myCards);
+router.get('/me/cardtypes/:merchantId', controller.myCardTypes);
 router.post('/me/cardtypes', auth.isAuthenticated(), controller.createCardType);
 
 module.exports = router;

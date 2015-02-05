@@ -6,10 +6,11 @@ angular.module('loyaltyApp')
     $scope.merchant = {};
     $scope.cardType = {};
     $scope.errors = {};
+    $scope.thisMerchant = Merchant.getDecidedMerchant();
 
     $scope.createCardType = function(cardType) {
       $scope.submitted = true;
-      cardType.merchant_id = $routeParams.merchant_id;
+      cardType.merchant_id = $scope.thisMerchant._id;
       if ($scope.cardTypeForm.$valid) {
       	CardType.createCardType(cardType).then( function(payload) {
       		$scope.errorMessage = 'success';
@@ -20,7 +21,6 @@ angular.module('loyaltyApp')
       	});
       } else {
       	$scope.errorMessage = 'En eller flere indtastede oplysninger er ikke korrekte';
-        console.log(cardType);
       }
     };
   });

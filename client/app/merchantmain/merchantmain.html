@@ -1,11 +1,4 @@
-<div ng-hide="oneMerchant"><h1>You are linked to multiple merchants. Please pick the one you want to work on now.</h1>
-<br>
-
-<div ng-repeat="merchant in merchantList">
-<button ng-click="chooseMerchant($index)">{{merchant.name}} {{$index}}</button>
-</div></div>
-
-<div ng-show="oneMerchant">
+<div>
 <h1>Dashboard</h1>
 <br>
 
@@ -47,5 +40,7 @@
 <a href="">Users that have visited you</a>
 <br>
 <a href="">Points earned day to day</a>
-<br>
+<br><br>
+
+<button ng-hide="oneMerchant" ng-click="chooseDifferentMerchant()">Choose a different merchant</button>
 </div>

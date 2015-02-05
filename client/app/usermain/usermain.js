@@ -3,7 +3,7 @@
 angular.module('loyaltyApp')
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/usermain', {
+      .when('/', {
         templateUrl: 'app/usermain/usermain.html',
         controller: 'UserMainCtrl'
       });

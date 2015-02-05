@@ -17,6 +17,8 @@ var MerchantSchema = new Schema({
     state: String,
     country: String
   },
+  formattedAddress: String,
+  location: { type: [Number], index: '2dsphere'},
   phone: String,
   url: String,
   vatNumber: String,

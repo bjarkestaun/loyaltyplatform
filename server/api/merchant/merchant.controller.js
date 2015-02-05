@@ -9,6 +9,7 @@ var User = require('../user/user.model');
 var Card = require('../card/card.model');
 var CardType = require('../cardType/cardType.model');
 var Merchant = require('./merchant.model');
+var googleService = require('../google/googleService');
 
 /**
  * Creates a new merchant
@@ -25,17 +26,24 @@ var Merchant = require('./merchant.model');
  * @param	vatNumber the VAT/tax registration number of the merchant
  */
 exports.createMerchant = function (req, res, next) {
-  var newMerchant = new Merchant(req.body);
-  newMerchant.status = 1;
-  newMerchant.lastUpdated = Date.now();
-  newMerchant.createdByUser_id = req.user._id;
-  newMerchant.adminUser_id = [req.user._id];
-  newMerchant.save(function(err, savedMerchant) {
-    if(err) {
-      return handleError(res, err);
-    }
-    res.json(savedMerchant);
-  });
+  console.log('kalder google service' + req.body.address);
+  googleService.getAddress(req.body.address, function(err, googleObject) {
+    console.log('callback fra google' + googleObject);
+    var newMerchant = new Merchant(req.body);
+    newMerchant.status = 1;
+    newMerchant.lastUpdated = Date.now();
+    newMerchant.createdByUser_id = req.user._id;
+    newMerchant.adminUser_id = [req.user._id];
+    newMerchant.formattedAddress = googleObject.formattedAddress;
+    newMerchant.location = [googleObject.location.lng, googleObject.location.lat];
+    console.log(newMerchant);
+    newMerchant.save(function(err, savedMerchant) {
+      if(err) {
+        return handleError(res, err);
+      }
+      res.json(savedMerchant);
+    });
+  })
 };
 
 /**
@@ -53,16 +61,24 @@ exports.me = function(req, res, next) {
 };
 
 
-exports.myCards = function(req, res, next) {
-  // create
-  return null;
+exports.myCardTypes = function(req, res, next) {
+  CardType.find({
+    merchant_id: req.params.merchantId
+  }, function(err, cardTypes) {
+    if (err) return next(err);
+    if (!cardTypes) return res.json(401);
+    res.json(cardTypes);
+  });
 };
 
 exports.createCardType = function(req, res, next) {
   var newCardType = new CardType(req.body);
+  console.log(newCardType);
   newCardType.status = 1;
   newCardType.lastUpdated = Date.now();
   newCardType.createdByUser_id = req.user._id;
+  newCardType.eventTypes.eventType = 'purchase';
+  newCardType.eventTypes.eventPoints = 1;
   newCardType.save(function(err, savedCardType) {
     if(err) {
       return handleError(res, err);

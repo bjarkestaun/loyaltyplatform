@@ -1,17 +1,29 @@
 <div>
-<h1>Welcome!</h1>
+  <h1>Welcome!</h1>
 </div>
 <br>
+<div class="heartbeat" ng-show="spinner">
+    Loading...
+</div>
 
 <div>
-<h2>Merchants</h2>
-<br>
+  <h2>Merchants</h2>
+  <br>
 
-<div ng-repeat="merchant in merchantList">
-<a ng-click="chooseMerchant($index)">{{merchant.name}}</a>
+  <input ng-model="searchWord" placeholder="Search"/>
 
-</div></div>
+  <div ng-repeat=" merchant in merchantList | filter: searchWord | orderBy: 'name' ">
+    <a ng-click="chooseMerchant(merchant)">{{merchant.name}}</a>
+  </div>
+</div>
 
 <div>
-<h2>Your cards</h2>
-<br>
+  <h2>Your cards</h2>
+  <br>
+
+  <div ng-repeat="card in cardList">
+    <p>{{card.merchant_id.name}}</p>
+    <rating ng-model="card.status" max="10" readonly="true" state-on="glyphicon-ok-sign" state-off="glyphicon-ok-circle"></rating>
+  </div>
+
+</div>

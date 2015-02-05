@@ -13,11 +13,14 @@ router.get('/me', auth.isAuthenticated(), controller.me);
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.post('/', controller.create);
-router.get('/me/cards', auth.isAuthenticated(), controller.showCards);
+router.get('/me/cards/status/:status', auth.isAuthenticated(), controller.showCards);
+router.get('/me/merchants/cardtypes/:merchantId', controller.showCardTypes);
+router.get('/me/merchants/cards/:merchantId', auth.isAuthenticated(), controller.showMerchantCards);
 router.get('/me/merchants', controller.showMerchants);
+router.post('/me/merchants/search', controller.searchForMerchants);
 // router.post('/me/cards/', auth.isAuthenticated(), controller.createCard);
-router.post('/me/cards/', controller.createCard);
-router.post('/me/cards/:cardid/event', auth.isAuthenticated(), controller.requestPoints);
-router.put('/me/cards/:cardid', auth.isAuthenticated(), controller.approveUsingCard);
+router.post('/me/cards', auth.isAuthenticated(), controller.createCard);
+router.post('/me/cards/:cardId/event', auth.isAuthenticated(), controller.requestEvent);
+router.put('/me/cards/:cardId', auth.isAuthenticated(), controller.approveUsingCard);
 
 module.exports = router;
