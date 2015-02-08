@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('loyaltyApp')
-  .controller('UserSignupCtrl', function ($scope, $http, $window, socket, Auth, $location) {
+  .controller('UserSignupCtrl', function ($scope, $http, $window, Auth, $location) {
   	$scope.user = {};
     $scope.errors = {};
 
@@ -12,6 +12,8 @@ angular.module('loyaltyApp')
     $scope.register = function(form) {
       $scope.submitted = true;
 
+      console.log('trying to create account');
+
       if(form.$valid) {
         Auth.createUser({
           name: $scope.user.name,
@@ -20,9 +22,11 @@ angular.module('loyaltyApp')
         })
         .then( function() {
           // Account created, redirect to merchant signup page
+          console.log('account created');
           $location.path('/usermain');
         })
         .catch( function(err) {
+          console.log('some error occured');
           err = err.data;
           $scope.errors = {};
 

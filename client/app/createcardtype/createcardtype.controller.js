@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('loyaltyApp')
-  .controller('CreateCardTypeCtrl', function ($scope, $http, $window, $routeParams, socket, Auth, $location, Merchant, CardType) {
+  .controller('CreateCardTypeCtrl', function ($scope, $http, $window, $routeParams, Auth, $location, Merchant, CardType) {
     
     $scope.merchant = {};
     $scope.cardType = {};

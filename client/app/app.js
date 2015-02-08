@@ -5,7 +5,6 @@ angular.module('loyaltyApp', [
   'ngResource',
   'ngSanitize',
   'ngRoute',
-  'btford.socket-io',
   'ui.bootstrap',
   'geolocation'
 ])

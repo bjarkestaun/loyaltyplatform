@@ -1,17 +1,20 @@
 'use strict';
 
 angular.module('loyaltyApp')
-.controller('UserMainCtrl', function ($scope, $http, $window, $routeParams, socket, Auth, $location, $cookieStore, User, InfoForUser, geolocation) {
+.controller('UserMainCtrl', function ($scope, $http, $window, $routeParams, Auth, $location, $cookieStore, User, InfoForUser, geolocation) {
 
   var currentUser = {};
+
+/*
   if($cookieStore.get('token')) {
     User.get(function(currentUser) {
     });
   };
-
+*/
 
   var init = function() {
     $scope.spinner = true;
+
     geolocation.getLocation().then(function(data){
       var distance = 10000000; //distance to search within - in meters
       $scope.coords = {
@@ -28,6 +31,7 @@ angular.module('loyaltyApp')
         $scope.error = true;
       });
     });
+
 
     var status = 1 //get active cards
     InfoForUser.getMyCards(1).then( function(payload) {

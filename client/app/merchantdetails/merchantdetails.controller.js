@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('loyaltyApp')
-.controller('MerchantDetailsCtrl', function ($scope, $http, $window, $routeParams, socket, Auth, $location, $cookieStore, User, InfoForUser) {
+.controller('MerchantDetailsCtrl', function ($scope, $http, $window, $routeParams, Auth, $location, $cookieStore, User, InfoForUser) {
 
   var currentUser = {};
   if($cookieStore.get('token')) {

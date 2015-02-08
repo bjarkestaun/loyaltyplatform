@@ -9,10 +9,10 @@ var router = express.Router();
 
 router.get('/', auth.hasRole('admin'), controller.index);
 router.post('/', controller.create);
+router.get('/me', auth.isAuthenticated(), controller.me);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
-router.get('/me', auth.isAuthenticated(), controller.me);
 router.get('/me/cards/status/:status', auth.isAuthenticated(), controller.getCards);
 router.get('/me/cards/:cardId', auth.isAuthenticated(), controller.getCardDetails);
 router.get('/me/merchants/cardtypes/:merchantId', controller.getCardTypes);

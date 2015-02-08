@@ -5,6 +5,7 @@ angular.module('loyaltyApp')
     $routeProvider
       .when('/', {
         templateUrl: 'app/usermain/usermain.html',
-        controller: 'UserMainCtrl'
+        controller: 'UserMainCtrl',
+        authenticate: true
       });
   });

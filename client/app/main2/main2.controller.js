@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('loyaltyApp')
-.controller('Main2Ctrl', function ($scope, $http, $window, socket, Auth, $location, $cookieStore, User, Places) {
+.controller('Main2Ctrl', function ($scope, $http, $window, Auth, $location, $cookieStore, User, Places) {
 
   $scope.ready = false;
 

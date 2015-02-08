@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('loyaltyApp')
-  .controller('SignupMerchantCtrl', function ($scope, $http, $window, socket, Auth, $location, Merchant) {
+  .controller('SignupMerchantCtrl', function ($scope, $http, $window, Auth, $location, Merchant) {
     
     $scope.merchant = {};
     $scope.errors = {};

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('loyaltyApp')
-  .controller('Signin2Ctrl', function ($scope, $http, $window, socket, Auth, $location) {
+  .controller('Signin2Ctrl', function ($scope, $http, $window, Auth, $location) {
   	$scope.user = {};
     $scope.errors = {};
 
