@@ -4,7 +4,6 @@ describe('Controller: MainCtrl', function () {
 
   // load the controller's module
   beforeEach(module('loyaltyApp'));
-  beforeEach(module('socketMock'));
 
   var MainCtrl,
       scope,
