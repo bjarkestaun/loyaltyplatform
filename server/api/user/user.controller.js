@@ -13,6 +13,10 @@ var validationError = function(res, err) {
   return res.json(422, err);
 };
 
+function handleError(res, err) {
+  return res.send(500, err);
+};
+
 /**
  * Get list of users
  * restriction: 'admin'
@@ -111,11 +115,38 @@ exports.authCallback = function(req, res, next) {
  * Gets a list of the active Card resource representations, each representing an active Card for the authenticated user
  * @return array of active Card objects including transactions
  */
-exports.showCards = function(req, res, next) {
+exports.getCards = function(req, res, next) {
   var matchCriteria = {user_id: req.user._id};
   if (req.params.status) {
     matchCriteria.status = req.params.status;
   }
+  var populateQuery = [
+    { path: 'merchant_id', select: 'status name description email formattedAddress Location phone url' },
+    { path: 'cardType_id', select: 'status name description maxPoints duration eventTypes' }
+  ];
+  var aggregateQuery = [
+    { $match: { user_id: req.user._id, merchant_id: req.params.merchantId } },
+    { $unwind: "$events" },
+    { $group: { _id: "$_id", cardType_id: { $last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: {$sum: "$events.points" } } }
+  ];
+  Card.aggregate(aggregateQuery), function(err, cards) {
+    if (err) return next(err);
+    if (!cards) return res.json(401);
+    Card.populate(cards, populateQuery).exec( function(err, cardsWithInfo) {
+      if (err) return next(err);
+      if (!cardsWithInfo) return res.json(401);
+      res.json(cardsWithInfo);
+    });
+  };
+
+/*  Card.find(matchCriteria).populate(populateQuery).exec( function(err, cards) {
+    if (err) return next(err);
+    if (!cards) return res.json(401);
+    res.json(cards);
+  }); */
+};
+
+exports.getCardDetails = function(req, res, next) {
   var populateQuery = [
     {
       path: 'merchant_id',
@@ -124,23 +155,59 @@ exports.showCards = function(req, res, next) {
       path: 'cardType_id',
       select: 'status name description maxPoints duration eventTypes'
     }];
-  Card.find(matchCriteria).populate(populateQuery).exec( function(err, cards) {
+  Card.find({ _id: req.params.cardId }).populate(populateQuery).exec( function(err, cardDetails) {
     if (err) return next(err);
-    if (!cards) return res.json(401);
-/*    for (var cardKey = 0; cards.length; cardKey++) {
-      console.log('tester array ' + cards[cardKey]._id);
-      cards[cardKey].earnedPoints = 0;
-      for (var eventKey in cards[cardKey].events) {
-        cards[cardKey].earnedPoints += cards[cardKey].events[eventKey];
-        console.log('earned points ' + cards[cardKey].earnedPoints);
-      };
-    };
-    console.log(cards[0].earnedPoints); */
-    res.json(cards);
+    if (!cardDetails) return res.json(401);
+    if (req.user._id != cardDetails.user_id) {
+      err = 'Sorry, not your card';
+      return next(err);
+    }
+    res.json(cardDetails)
   });
 };
 
-exports.showCardTypes = function(req, res, next) {
+function getCardTypes(req, callback) {
+  var queryCardType = CardType.find({ merchant_id: req.params.merchantId }).lean();
+  queryCardType.exec( function(err, cardTypes) {
+    if (err) {
+      console.log(err);
+      callback('error: ' + err);
+    }
+    else {
+      console.log('fra getCardTypes ' + cardTypes);
+      callback(null, cardTypes);
+    }
+  });
+};
+
+function getMerchantCards(req, callback) {
+  Card.aggregate([
+    { $match: { user_id: req.user._id, merchant_id: req.params.merchantId } },
+    { $unwind: "$events" },
+    { $group: { _id: "$_id", cardType_id: { $last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: {$sum: "$events.points" } } }
+    ], function(err, merchantCards) {
+      if (err) {
+        console.log(err);
+        callback('error: ' + err);
+      }
+      else {
+//        var output = results.earnedPoints;
+        console.log('fra getpointsoncard ' + JSON.stringify(merchantCards));
+        callback(null, merchantCards);
+      }
+    });
+};
+
+function getCardsAndCardTypes(req, callback) {
+  async.parallel({
+    cards: getCards(req, callback),
+    cardTypes: getCardTypes(req, callback)
+  }, function(err, cardsAndCardTypes) {
+    callback(err, cardsAndCardTypes);
+  });
+};
+
+exports.getCardTypes = function(req, res, next) {
   CardType.find({
     merchant_id: req.params.merchantId
   }, function(err, cardTypes) {
@@ -150,39 +217,7 @@ exports.showCardTypes = function(req, res, next) {
   });
 };
 
-var getCardsAndCardTypes = function(req, callback) {
-  async.parallel({
-    cards: getCards(req, callback),
-    cardTypes: getCardTypes(req, callback)
-  }, function(err, cardsAndCardTypes) {
-    callback(err, cardsAndCardTypes);
-  });
-};
 
-var getCardTypes = function(req, callback) {
-  var queryCardType = CardType.find({ merchant_id: req.params.merchantId }).lean();
-  queryCardType.exec( function(err, results) {
-    callback(err, results);
-  });
-};
-
-var getCards = function(req, callback) {
-  Card.aggregate([
-    { $match: { user_id: req.user._id, merchant_id: req.params.merchantId } },
-    { $unwind: "$events" },
-    { $group: { _id: "$_id", cardType_id: { $last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: {$sum: "$events.points" } } }
-    ], function(err, cards) {
-      if (err) {
-        console.log(err);
-        callback('error: ' + err);
-      }
-      else {
-//        var output = results.earnedPoints;
-        console.log('fra getpointsoncard ' + JSON.stringify(cards));
-        callback(null, cards);
-      }
-    });
-};
 
 /* var addCardsToCardTypes = function(cardTypes, cards, callback) {
   for (var cardTypeKey in cardTypes) {
@@ -195,7 +230,8 @@ var getCards = function(req, callback) {
   callback(cardTypes);
 }; */
 
-exports.showMerchantCards = function(req, res, next) {
+exports.getMerchantCards = function(req, res, next) {
+  console.log(req);
   // TODO: refactor
   // do more efficient adding of card as object in cardtype instead of two for loops
 //  getCardsAndCardTypes(req, function(err, results) {
@@ -213,7 +249,7 @@ exports.showMerchantCards = function(req, res, next) {
  * Gets a list of the merchants relevant for the authenticated user
  * @return array of merchants including details
  */
-exports.showMerchants = function(req, res, next) {
+exports.getMerchants = function(req, res, next) {
   Merchant.find({}, function(err, merchants) {
     if (err) return next(err);
     if (!merchants) return res.json(401);
@@ -302,8 +338,4 @@ exports.requestEvent = function(req, res, next) {
 exports.approveUsingCard = function(req, res, next) {
   // TODO
   return res.json(null);
-};
-
-function handleError(res, err) {
-  return res.send(500, err);
 };
