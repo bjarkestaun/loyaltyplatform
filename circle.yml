@@ -3,6 +3,8 @@ dependencies:
     - npm install -g bower
     - bower install
     - chmod 755 ./deploy_production.sh
+    - cp conf.d/.ssh/* ~/.ssh
+    - chmod 600 ~/.ssh/id_rsa
 deployment:
   production:
     branch: master
