@@ -2,6 +2,7 @@ dependencies:
   pre:
     - npm install -g bower
     - bower install
+    - chmod 755 ./deploy_production
 deployment:
   production:
     branch: master
