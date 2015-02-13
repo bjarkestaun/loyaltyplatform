@@ -2,3 +2,8 @@ dependencies:
   pre:
     - npm install -g bower
     - bower install
+deployment:
+  production:
+    branch: master
+    commands:
+      - ./deploy_production.sh
