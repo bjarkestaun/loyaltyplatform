@@ -111,10 +111,33 @@ exports.authCallback = function(req, res, next) {
   res.redirect('/');
 };
 
-/**
- * Gets a list of the active Card resource representations, each representing an active Card for the authenticated user
- * @return array of active Card objects including transactions
- */
+exports.getMerchants = function(req, res, next) {
+  Merchant.find({}, function(err, merchants) {
+    if (err) return next(err);
+    if (!merchants) return res.json(401);
+    res.json(merchants);
+  });
+};
+
+exports.searchForMerchants = function(req, res, next) {
+  var userLocation = [req.body.lng, req.body.lat];
+  Merchant.find({
+    location: {
+      $near: {
+        $geometry: {
+          type: 'Point',
+          coordinates: userLocation
+        },
+        $maxDistance: req.body.distance
+      }
+    }
+  }, function(err, merchants) {
+    if (err) return next(err);
+    if (!merchants) return res.json(401);
+    res.json(merchants);
+  })
+};
+
 exports.getCards = function(req, res, next) {
   var matchCriteria = {user_id: req.user._id};
   if (req.params.status) {
@@ -166,47 +189,6 @@ exports.getCardDetails = function(req, res, next) {
   });
 };
 
-function getCardTypes(req, callback) {
-  var queryCardType = CardType.find({ merchant_id: req.params.merchantId }).lean();
-  queryCardType.exec( function(err, cardTypes) {
-    if (err) {
-      console.log(err);
-      callback('error: ' + err);
-    }
-    else {
-      console.log('fra getCardTypes ' + cardTypes);
-      callback(null, cardTypes);
-    }
-  });
-};
-
-function getMerchantCards(req, callback) {
-  Card.aggregate([
-    { $match: { user_id: req.user._id, merchant_id: req.params.merchantId } },
-    { $unwind: "$events" },
-    { $group: { _id: "$_id", cardType_id: { $last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: {$sum: "$events.points" } } }
-    ], function(err, merchantCards) {
-      if (err) {
-        console.log(err);
-        callback('error: ' + err);
-      }
-      else {
-//        var output = results.earnedPoints;
-        console.log('fra getpointsoncard ' + JSON.stringify(merchantCards));
-        callback(null, merchantCards);
-      }
-    });
-};
-
-function getCardsAndCardTypes(req, callback) {
-  async.parallel({
-    cards: getCards(req, callback),
-    cardTypes: getCardTypes(req, callback)
-  }, function(err, cardsAndCardTypes) {
-    callback(err, cardsAndCardTypes);
-  });
-};
-
 exports.getCardTypes = function(req, res, next) {
   CardType.find({
     merchant_id: req.params.merchantId
@@ -217,70 +199,34 @@ exports.getCardTypes = function(req, res, next) {
   });
 };
 
-
-
-/* var addCardsToCardTypes = function(cardTypes, cards, callback) {
-  for (var cardTypeKey in cardTypes) {
-    for (var cardKey in cards) {
-      if (cardTypes[cardTypeKey]._id.equals(cards[cardKey].cardType_id)) {
-        getCardDetails(cards[cardKey].cardType_id, function(err, cardTypes)
-      }
-    } 
-  }
-  callback(cardTypes);
-}; */
-
 exports.getMerchantCards = function(req, res, next) {
-  console.log(req);
-  // TODO: refactor
-  // do more efficient adding of card as object in cardtype instead of two for loops
-//  getCardsAndCardTypes(req, function(err, results) {
-//    if (err) return next(err);
-//    if (!results.cardTypes) return res.json(401);
-//    if (!results.cards || results.cards.length === 0) return res.json(results.cardTypes);
-    getCardsAndCardTypes(req, function(err, cardsAndCardTypes) {
-      console.log('card details ' + JSON.stringify(cardsAndCardTypes));
-      res.json(cardsAndCardTypes);
+  console.log(req.user._id);
+  console.log('from getmerchantcards ' + req.params.merchantId);
+/*  Card.find({
+    user_id: req.user._id,
+    merchant_id: req.params.merchantId
+  }, function(err, merchantCards) {
+    if (err) return next(err);
+    if (!merchantCards) return res.json(401);
+    res.json(merchantCards);
+  }); */
+  // 54ce6906944228581f2789d5
+  Card.aggregate([
+    { $match: { merchant_id: req.params.merchantId } }, 
+    // , merchant_id: req.params.merchantId
+    // user_id: req.user._id, 
+//    { $unwind: "$events" },
+    { $group: { _id: "$_id" } }
+//    { $group: { _id: "$_id", cardType_id: { $last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: {$sum: "$events.points" } } }
+    ],
+    function(err, merchantCards) {
+      console.log('from getmerchantcards ' + JSON.stringify(merchantCards));
+      if (err) return next(err);
+      if (!merchantCards) return res.json(401);
+      res.json(merchantCards);
     });
-//  });
 };
 
-/**
- * Gets a list of the merchants relevant for the authenticated user
- * @return array of merchants including details
- */
-exports.getMerchants = function(req, res, next) {
-  Merchant.find({}, function(err, merchants) {
-    if (err) return next(err);
-    if (!merchants) return res.json(401);
-    res.json(merchants);
-  });
-};
-
-exports.searchForMerchants = function(req, res, next) {
-  var userLocation = [req.body.lng, req.body.lat];
-  Merchant.find({
-    location: {
-      $near: {
-        $geometry: {
-          type: 'Point',
-          coordinates: userLocation
-        },
-        $maxDistance: req.body.distance
-      }
-//      $within: { $centerSphere: [ userLocation , req.body.distance / 6378.137 ] }
-    }
-  }, function(err, merchants) {
-    if (err) return next(err);
-    if (!merchants) return res.json(401);
-    res.json(merchants);
-  })
-};
-
-/**
- * Adds a new card for a merchant for the authenticated user
- * @param merchantid the ID of the merchant
- */
 exports.createCard = function(req, res, next) {
   // check if user exists and merchant exists and cardtype exists
   // then if they do create new card
@@ -304,10 +250,6 @@ exports.createCard = function(req, res, next) {
   });
 };
 
-/**
- * Requests points on a card that the authenticated user
- * @param cardid the ID of the card
- */
 exports.requestEvent = function(req, res, next) {
   Card.findById(req.params.cardId, function(err, thisCard) {
     if(err || !thisCard) {
@@ -332,10 +274,6 @@ exports.requestEvent = function(req, res, next) {
   });
 };
 
-/** Approves using a card for the authenticated user
- * @param cardid the ID of the card
- */
 exports.approveUsingCard = function(req, res, next) {
-  // TODO
-  return res.json(null);
+  res.json(null);
 };

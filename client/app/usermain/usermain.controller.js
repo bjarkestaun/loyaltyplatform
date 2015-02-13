@@ -5,12 +5,10 @@ angular.module('loyaltyApp')
 
   var currentUser = {};
 
-/*
   if($cookieStore.get('token')) {
     User.get(function(currentUser) {
     });
   };
-*/
 
   var init = function() {
     $scope.spinner = true;

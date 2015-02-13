@@ -47,9 +47,8 @@ angular.module('loyaltyApp')
 
     getCardTypes: function(thisMerchant) {
       var deferred = $q.defer();
-      $http.get('/api/users/me/merchants/cards/' + thisMerchant._id)
+      $http.get('/api/users/me/merchants/cardtypes/' + thisMerchant._id)
       .success( function(data) {
-        console.log(data);
         deferred.resolve({
           data: data
         });
@@ -62,6 +61,19 @@ angular.module('loyaltyApp')
     getMyCards: function(status) {
       var deferred = $q.defer();
       $http.get('/api/users/me/cards/status/' + status)
+      .success( function(data) {
+        deferred.resolve({
+          data: data
+        });
+      }).error( function(msg, code) {
+        deferred.reject(msg);
+      });
+      return deferred.promise;
+    },
+
+    getMerchantCards: function(thisMerchant) {
+      var deferred = $q.defer();
+      $http.get('/api/users/me/merchants/cards/' + thisMerchant._id)
       .success( function(data) {
         deferred.resolve({
           data: data
