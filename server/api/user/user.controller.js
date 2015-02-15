@@ -8,6 +8,7 @@ var Card = require('../card/card.model');
 var Merchant = require('../merchant/merchant.model');
 var CardType = require('../cardType/cardType.model');
 var async = require('async');
+var mongoose = require('mongoose');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -200,22 +201,10 @@ exports.getCardTypes = function(req, res, next) {
 };
 
 exports.getMerchantCards = function(req, res, next) {
-  console.log(req.user._id);
-  console.log('from getmerchantcards ' + req.params.merchantId);
-/*  Card.find({
-    user_id: req.user._id,
-    merchant_id: req.params.merchantId
-  }, function(err, merchantCards) {
-    if (err) return next(err);
-    if (!merchantCards) return res.json(401);
-    res.json(merchantCards);
-  }); */
-  // 54ce6906944228581f2789d5
+  var merchant_id = mongoose.Types.ObjectId(req.params.merchantId);
   Card.aggregate([
-    { $match: { merchant_id: req.params.merchantId } }, 
-    // , merchant_id: req.params.merchantId
-    // user_id: req.user._id, 
-//    { $unwind: "$events" },
+    { $match: { merchant_id: merchant_id, user_id: req.user._id } }, 
+    { $unwind: "$events" },
     { $group: { _id: "$_id" } }
 //    { $group: { _id: "$_id", cardType_id: { $last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: {$sum: "$events.points" } } }
     ],
