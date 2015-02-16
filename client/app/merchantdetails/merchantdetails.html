@@ -22,6 +22,7 @@
 <div ng-repeat="cardType in cardTypesList">
 	<p>{{cardType.name}}</p>
 	<p>{{cardType.description}}</p>
+  <rating ng-model="cardType.earnedPoints" max="cardType.maxPoints" readonly="true" state-on="glyphicon-ok-sign" state-off="glyphicon-ok-circle"></rating>
 	<p>Earned points: {{cardType.earnedPoints}}</p>
   <p>Max points: {{cardType.maxPoints}}</p>
   <button ng-click="requestPoint(cardType)">Request Point</button><br><br>
