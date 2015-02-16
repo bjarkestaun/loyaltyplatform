@@ -191,9 +191,7 @@ exports.getCardDetails = function(req, res, next) {
 };
 
 exports.getCardTypes = function(req, res, next) {
-  CardType.find({
-    merchant_id: req.params.merchantId
-  }, function(err, cardTypes) {
+  CardType.find({ merchant_id: req.params.merchantId }, function(err, cardTypes) {
     if (err) return next(err);
     if (!cardTypes) return res.json(401);
     res.json(cardTypes);
@@ -203,10 +201,9 @@ exports.getCardTypes = function(req, res, next) {
 exports.getMerchantCards = function(req, res, next) {
   var merchant_id = mongoose.Types.ObjectId(req.params.merchantId);
   Card.aggregate([
-    { $match: { merchant_id: merchant_id, user_id: req.user._id } }, 
+    { $match: { merchant_id: merchant_id, user_id: req.user._id } },
     { $unwind: "$events" },
-    { $group: { _id: "$_id" } }
-//    { $group: { _id: "$_id", cardType_id: { $last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: {$sum: "$events.points" } } }
+    { $group: { _id: "$_id", cardType_id: { $last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: {$sum: "$events.points" } } }
     ],
     function(err, merchantCards) {
       console.log('from getmerchantcards ' + JSON.stringify(merchantCards));
@@ -229,7 +226,7 @@ exports.createCard = function(req, res, next) {
     newCard.lastUpdated = Date.now();
     newCard.merchant_id = thisCardType.merchant_id;
      newCard.user_id = req.user._id;
-    newCard.events = [];
+    newCard.events.push({points: 0});
     newCard.save(function(err, savedCard) {
       if(err) {
         return handleError(res, err);
