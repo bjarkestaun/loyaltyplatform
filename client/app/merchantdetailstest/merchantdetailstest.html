@@ -19,10 +19,11 @@
 <p>{{merchantInfo.address.zipCode}} {{merchantInfo.address.city}}</p><br>
 <br><br>
 
-<div ng-repeat="cardType in cardTypeList">
+<div ng-repeat="cardType in cardTypesWithCardsList">
   <p>card type {{cardType.$index}}:</p>
   <p>{{cardType.name}}</p>
   <p>{{cardType.description}}</p>
+  <p>Earned Points: {{cardType.earnedPoints}}</p>
   <p>Point: {{cardType.maxPoints}}</p><br>
   <button ng-click="requestCard(cardType)">Request card</button><br><br>
 </div>

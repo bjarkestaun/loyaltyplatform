@@ -1,29 +1,29 @@
 <div>
 
 <p>{{merchantInfo.name}}</p>
-<br><br>
+<br>
 
 <p>{{merchantInfo.description}}</p>
-<br><br>
+<br>
 
 <p>{{merchantInfo.email}}</p>
-<br><br>
+<br>
 
 <p>{{merchantInfo.phone}}</p>
-<br><br>
+<br>
 
 <p>{{merchantInfo.url}}</p>
-<br><br>
+<br>
 
 <p>{{merchantInfo.address.street}}</p><br>
 <p>{{merchantInfo.address.zipCode}} {{merchantInfo.address.city}}</p><br>
-<br><br>
+<br>
 
-<div ng-repeat="cardType in cardTypeList">
-	<p>card {{cardType.$index}}:</p>
+<div ng-repeat="cardType in cardTypesList">
 	<p>{{cardType.name}}</p>
 	<p>{{cardType.description}}</p>
-	<p>Point: {{cardType.maxPoints}}</p><br>
+	<p>Earned points: {{cardType.earnedPoints}}</p>
+  <p>Max points: {{cardType.maxPoints}}</p>
   <button ng-click="requestPoint(cardType)">Request Point</button><br><br>
 </div>
 

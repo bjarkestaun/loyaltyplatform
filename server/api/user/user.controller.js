@@ -233,8 +233,10 @@ var appendCardsToCardTypes = function(cardTypes, cards) {
         console.log('id match');
         cardTypes[cardType].earnedPoints = cards[card].earnedPoints;
         cardTypes[cardType].validFrom = cards[card].validFrom;
+        cardTypes[cardType].card_id = cards[card]._id;
       }
     }
+    if (!cardTypes[cardType].earnedPoints) cardTypes[cardType].earnedPoints = 0;
   }
   return cardTypes;
 }

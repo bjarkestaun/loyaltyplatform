@@ -16,9 +16,9 @@ angular.module('loyaltyApp')
       $location.path('/usermain');
     }
     else {
-      InfoForUser.getCardTypes($scope.merchantInfo).then( function(payload) {
-        $scope.cardTypeList = payload.data;
-        console.log($scope.cardTypeList);
+      InfoForUser.getCardTypesWithCards($scope.merchantInfo).then( function(payload) {
+        $scope.cardTypesList = payload.data;
+        console.log($scope.cardTypesList);
       }, function(errorPayload) {
         $scope.error = true;
       });
@@ -26,32 +26,25 @@ angular.module('loyaltyApp')
   };
 
 $scope.requestPoint = function(cardType) {
-  if (!cardType.card) {
+  if (!cardType.card_id) {
     console.log('no card yet');
     InfoForUser.createCard(cardType._id).then( function(payload) {
       console.log('creates card');
-      InfoForUser.requestEvent(payload._id);
+      InfoForUser.requestEvent(payload._id).then( function(payload) {
+        InfoForUser.getCardTypesWithCards($scope.merchantInfo).then( function(payload) {
+          $scope.cardTypesList = payload.data;
+        });
+      });
     });
   }
   else {
-    console.log('card exists');
-    console.log(cardType.card);
-    InfoForUser.requestEvent(cardType.card._id);
-  }
-  
-/*  InfoForUser.getMyCards(1).then( function(payload) {
-    $scope.myCards = payload.data;
-    InfoForUser.createCard(cardType._id).then( function(payload) {
-      InfoForUser.requestEvent(payload._id).then( function(payload) {},
-        function(errorPayload) {
-          $scope.error = true;
-        });
-    }, function(errorPayload) {
-      $scope.error = true;
+    console.log('card exists ' + cardType.card_id);
+    InfoForUser.requestEvent(cardType.card_id).then( function(payload) {
+      InfoForUser.getCardTypesWithCards($scope.merchantInfo).then( function(payload) {
+        $scope.cardTypesList = payload.data;
+      });
     });
-  }); */
-
-
+  }
 };
 
 $scope.logout = function() {
