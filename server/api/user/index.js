@@ -19,6 +19,7 @@ router.get('/me/cards/status/:status', auth.isAuthenticated(), controller.getCar
 router.get('/me/cards/:cardId', auth.isAuthenticated(), controller.getCardDetails);
 router.get('/me/merchants/cardtypes/:merchantId', controller.getCardTypes);
 router.get('/me/merchants/cards/:merchantId', auth.isAuthenticated(), controller.getMerchantCards);
+router.get('/me/merchants/cardtypeswithcards/:merchantId', auth.isAuthenticated(), controller.getCardTypesWithCards);
 router.post('/me/cards', auth.isAuthenticated(), controller.createCard);
 router.post('/me/cards/:cardId/event', auth.isAuthenticated(), controller.requestEvent);
 router.put('/me/cards/:cardId', auth.isAuthenticated(), controller.approveUsingCard);

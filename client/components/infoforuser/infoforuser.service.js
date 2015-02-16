@@ -84,6 +84,19 @@ angular.module('loyaltyApp')
       return deferred.promise;
     },
 
+    getCardsWithCardTypes: function(thisMerchant) {
+      var deferred = $q.defer();
+      $http.get('/api/users/me/merchants/cardtypeswithcards/' + thisMerchant._id)
+      .success( function(data) {
+        deferred.resolve({
+          data: data
+        });
+      }).error( function(msg, code) {
+        deferred.reject(msg);
+      });
+      return deferred.promise;
+    },
+
     createCard: function(cardType_id) {
       var deferred = $q.defer();
       $http({

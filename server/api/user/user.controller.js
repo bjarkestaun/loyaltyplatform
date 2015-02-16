@@ -203,19 +203,46 @@ exports.getMerchantCards = function(req, res, next) {
   Card.aggregate([
     { $match: { merchant_id: merchant_id, user_id: req.user._id } },
     { $unwind: "$events" },
-    { $group: { _id: "$_id", cardType_id: { $last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: {$sum: "$events.points" } } }
-    ],
-    function(err, merchantCards) {
-      console.log('from getmerchantcards ' + JSON.stringify(merchantCards));
+    { $group: { _id: "$_id", cardType_id: { $last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: { $sum: "$events.points" } } }
+    ], function(err, merchantCards) {
       if (err) return next(err);
       if (!merchantCards) return res.json(401);
       res.json(merchantCards);
     });
 };
 
+exports.getCardTypesWithCards = function(req, res, next) {
+  var merchant_id = mongoose.Types.ObjectId(req.params.merchantId);
+  CardType.find({ merchant_id: merchant_id }).lean().exec( function(err, cardTypes) {
+    if (err) return next(err);
+    if (!cardTypes) return res.json(401);
+    Card.aggregate([
+      { $match: { merchant_id: merchant_id, user_id: req.user._id } },
+      { $unwind: "$events" },
+      { $group: {_id: "$_id", cardType_id: {$last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: { $sum: "$events.points" } } }
+      ], function(err, cards) {
+        if (err) return next(err);
+        if (!cards) return res.json(401);
+        for (var cardType in cardTypes) {
+          for (var card in cards) {
+            console.log(cards[card].cardType_id);
+            console.log(cardTypes[cardType]._id);
+            if (cards[card].cardType_id.equals(cardTypes[cardType]._id)) {
+              console.log('id match');
+              cardTypes[cardType].earnedPoints = cards[card].earnedPoints;
+              cardTypes[cardType].validFrom = cards[card].validFrom;
+            }
+          }
+        }
+        res.json(cardTypes);
+      });
+  });
+};
+
 exports.createCard = function(req, res, next) {
   // check if user exists and merchant exists and cardtype exists
   // then if they do create new card
+  // TODO: refactor so getMerchantCards $unwind method works without initializing a card with a 0 point event
   CardType.findById(req.body.cardType_id, function(err, thisCardType) {
     if(err || !thisCardType) {
       if (!thisCardType) { err = 'Sorry - the cardtype does not exists'; }

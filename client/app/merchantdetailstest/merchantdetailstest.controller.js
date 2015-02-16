@@ -22,7 +22,12 @@ angular.module('loyaltyApp')
       });
       InfoForUser.getMerchantCards($scope.merchantInfo).then( function(payload) {
         $scope.cardList = payload.data;
-        console.log($scope.cardList);
+      }, function(errorPayload) {
+        $scope.error = true;
+      });
+      InfoForUser.getCardsWithCardTypes($scope.merchantInfo).then( function(payload) {
+        $scope.getCardsWithCardTypesList = payload.data;
+        console.log($scope.getCardsWithCardTypesList);
       }, function(errorPayload) {
         $scope.error = true;
       });
