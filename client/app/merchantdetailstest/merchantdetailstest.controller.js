@@ -25,9 +25,9 @@ angular.module('loyaltyApp')
       }, function(errorPayload) {
         $scope.error = true;
       });
-      InfoForUser.getCardsWithCardTypes($scope.merchantInfo).then( function(payload) {
-        $scope.getCardsWithCardTypesList = payload.data;
-        console.log($scope.getCardsWithCardTypesList);
+      InfoForUser.getCardTypesWithCards($scope.merchantInfo).then( function(payload) {
+        $scope.cardTypesWithCardsList = payload.data;
+        console.log($scope.cardTypesWithCardsList);
       }, function(errorPayload) {
         $scope.error = true;
       });

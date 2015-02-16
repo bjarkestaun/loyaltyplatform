@@ -211,31 +211,39 @@ exports.getMerchantCards = function(req, res, next) {
     });
 };
 
+var getCardTypesAndCards = function(user_id, merchant_id, callback) {
+  async.parallel({
+    cardTypes: function(callback) {
+      CardType.find({ merchant_id: merchant_id }).lean().exec(callback);
+    },
+    cards: function(callback) {
+      Card.aggregate([
+        { $match: { merchant_id: merchant_id, user_id: user_id } },
+        { $unwind: "$events" },
+        { $group: {_id: "$_id", cardType_id: {$last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: { $sum: "$events.points" } } }
+      ], callback);
+    }
+  }, callback)
+};
+
+var appendCardsToCardTypes = function(cardTypes, cards) {
+  for (var cardType in cardTypes) {
+    for (var card in cards) {
+      if (cards[card].cardType_id.equals(cardTypes[cardType]._id)) {
+        console.log('id match');
+        cardTypes[cardType].earnedPoints = cards[card].earnedPoints;
+        cardTypes[cardType].validFrom = cards[card].validFrom;
+      }
+    }
+  }
+  return cardTypes;
+}
+
 exports.getCardTypesWithCards = function(req, res, next) {
   var merchant_id = mongoose.Types.ObjectId(req.params.merchantId);
-  CardType.find({ merchant_id: merchant_id }).lean().exec( function(err, cardTypes) {
-    if (err) return next(err);
-    if (!cardTypes) return res.json(401);
-    Card.aggregate([
-      { $match: { merchant_id: merchant_id, user_id: req.user._id } },
-      { $unwind: "$events" },
-      { $group: {_id: "$_id", cardType_id: {$last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: { $sum: "$events.points" } } }
-      ], function(err, cards) {
-        if (err) return next(err);
-        if (!cards) return res.json(401);
-        for (var cardType in cardTypes) {
-          for (var card in cards) {
-            console.log(cards[card].cardType_id);
-            console.log(cardTypes[cardType]._id);
-            if (cards[card].cardType_id.equals(cardTypes[cardType]._id)) {
-              console.log('id match');
-              cardTypes[cardType].earnedPoints = cards[card].earnedPoints;
-              cardTypes[cardType].validFrom = cards[card].validFrom;
-            }
-          }
-        }
-        res.json(cardTypes);
-      });
+  getCardTypesAndCards(req.user._id, merchant_id, function(err, cardTypesAndCards) {
+    var cardTypesWithCards = appendCardsToCardTypes(cardTypesAndCards.cardTypes, cardTypesAndCards.cards);
+    res.json(cardTypesWithCards);
   });
 };
 
