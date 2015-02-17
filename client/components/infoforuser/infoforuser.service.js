@@ -106,7 +106,6 @@ angular.module('loyaltyApp')
         data: { cardType_id: cardType_id }
       }).
       success(function(data) {
-        console.log('creates card');
         deferred.resolve(data);
       }).error(function(msg, code) {
         deferred.reject(msg);
@@ -123,7 +122,6 @@ angular.module('loyaltyApp')
         headers: {'content-type': 'application/json'},
       }).
       success(function(data) {
-        console.log('event succeeded');
         deferred.resolve(data);
       }).error(function(msg, code) {
         deferred.reject(msg);

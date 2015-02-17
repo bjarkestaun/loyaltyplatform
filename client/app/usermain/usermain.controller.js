@@ -30,11 +30,9 @@ angular.module('loyaltyApp')
       });
     });
 
-
     var status = 1 //get active cards
     InfoForUser.getMyCards(1).then( function(payload) {
-      $scope.cardList = payload.data;
-      console.log($scope.cardList);
+      $scope.cardsList = payload.data;
     }, function(errorPayload) {
       $scope.error = true;
     });
@@ -44,6 +42,14 @@ angular.module('loyaltyApp')
   $scope.chooseMerchant = function(merchant) {
     InfoForUser.setMerchantDetails(merchant);
     $location.path('/merchantdetails');
+  };
+
+  $scope.requestPoint = function(card) {
+    InfoForUser.requestEvent(card._id).then( function(payload) {
+      InfoForUser.getMyCards(1).then( function(payload) {
+        $scope.cardsList = payload.data;
+      });
+    });
   };
 
   $scope.logout = function() {

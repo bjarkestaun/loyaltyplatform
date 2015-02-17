@@ -21,9 +21,11 @@
   <h2>Your cards</h2>
   <br>
 
-  <div ng-repeat="card in cardList">
+  <div ng-repeat="card in cardsList">
     <p>{{card.merchant_id.name}}</p>
-    <rating ng-model="card.status" max="10" readonly="true" state-on="glyphicon-ok-sign" state-off="glyphicon-ok-circle"></rating>
+    <p>{{card.cardType_id.name}}</p>
+    <rating ng-model="card.earnedPoints" max="card.cardType_id.maxPoints" readonly="true" state-on="glyphicon-ok-sign" state-off="glyphicon-ok-circle"></rating><br>
+    <button ng-click="requestPoint(card)">Request Point</button><br><br>
   </div>
 
 </div>

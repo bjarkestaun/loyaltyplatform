@@ -140,34 +140,29 @@ exports.searchForMerchants = function(req, res, next) {
 };
 
 exports.getCards = function(req, res, next) {
-  var matchCriteria = {user_id: req.user._id};
+  var matchCriteria = { user_id: req.user._id };
   if (req.params.status) {
-    matchCriteria.status = req.params.status;
+    matchCriteria.status = Number(req.params.status);
   }
   var populateQuery = [
     { path: 'merchant_id', select: 'status name description email formattedAddress Location phone url' },
     { path: 'cardType_id', select: 'status name description maxPoints duration eventTypes' }
   ];
   var aggregateQuery = [
-    { $match: { user_id: req.user._id, merchant_id: req.params.merchantId } },
+    { $match: matchCriteria },
     { $unwind: "$events" },
-    { $group: { _id: "$_id", cardType_id: { $last: "$cardType_id" }, validFrom: { $last: "$validFrom" }, earnedPoints: {$sum: "$events.points" } } }
+    { $group: { _id: "$_id", user_id: { $last: "$user_id" }, merchant_id: { $last: "$merchant_id" }, cardType_id: { $last: "$cardType_id" }, status: { $last: "$status" }, validFrom: { $last: "$validFrom" }, earnedPoints: { $sum: "$events.points" } } }
   ];
-  Card.aggregate(aggregateQuery), function(err, cards) {
+  Card.aggregate(aggregateQuery, function(err, cards) {
     if (err) return next(err);
     if (!cards) return res.json(401);
-    Card.populate(cards, populateQuery).exec( function(err, cardsWithInfo) {
+//    res.json(cards);
+    Card.populate(cards, populateQuery, function(err, cardsWithInfo) {
       if (err) return next(err);
       if (!cardsWithInfo) return res.json(401);
       res.json(cardsWithInfo);
     });
-  };
-
-/*  Card.find(matchCriteria).populate(populateQuery).exec( function(err, cards) {
-    if (err) return next(err);
-    if (!cards) return res.json(401);
-    res.json(cards);
-  }); */
+  });
 };
 
 exports.getCardDetails = function(req, res, next) {
@@ -230,7 +225,6 @@ var appendCardsToCardTypes = function(cardTypes, cards) {
   for (var cardType in cardTypes) {
     for (var card in cards) {
       if (cards[card].cardType_id.equals(cardTypes[cardType]._id)) {
-        console.log('id match');
         cardTypes[cardType].earnedPoints = cards[card].earnedPoints;
         cardTypes[cardType].validFrom = cards[card].validFrom;
         cardTypes[cardType].card_id = cards[card]._id;
@@ -279,14 +273,6 @@ exports.requestEvent = function(req, res, next) {
       if (!thisCard) { err = 'Sorry this card does not exist';}
       return handleError(res, err);
     }
-/*    if (thisCard.user_id != req.user._id) {
-      console.log(thisCard.user_id);
-      console.log(req.user._id);
-      console.log('not your card');
-      console.log(thisCard.user_id == req.user._id);
-      err = 'This is not your card';
-      return handleError(res, err);
-    } */
     thisCard.events.push({points: 1});
     thisCard.save(function(err, savedCard) {
       if(err) {
